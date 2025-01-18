@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Managing Your Risk of Thyroid Disorders</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/riskfac.css') }}">
+
+</head>
+<body>
+    <header class="header">
+        <div class="container-head">
+            <nav class="nav">
+                <div class="logo">ThyroPredict</div>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="http://127.0.0.1:5000/#" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="http://127.0.0.1:5000/aboutus" class="nav-link">About</a></li>
+                    <li class="nav-item"><a href="http://127.0.0.1:5000/predict" class="nav-link">Predict</a></li>
+                    <li class="nav-item"><a href="http://127.0.0.1:5000/map" class="nav-link">Find a Doc</a></li>
+                    <li class="nav-item"><a href="http://127.0.0.1:5000/riskfac" class="nav-link">Risk Factors</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="thyroid-risk-section">
+        <div class="content-wrapper">
+            <h1 class="section-title">Managing Your Risk of <span style="color: #00acc1;">Thyroid Disorders</span></h1>
+            <div class="risk-factors-grid">
+                <article class="risk-factor-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Regular Health Screenings</h2>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-description">Early detection is key to managing thyroid conditions effectively. Routine thyroid function tests can help identify any imbalances before they become serious health issues.</p>
+                        <button class="read-more-btn" onclick="openModal('modal1')">Read More</button>
+                    </div>
+                </article>
+                <article class="risk-factor-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Maintain a Balanced Diet</h2>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-description">Your diet plays a vital role in maintaining a healthy thyroid. Certain nutrients are essential for proper thyroid function, while some foods should be consumed in moderation.</p>
+                        <button class="read-more-btn" onclick="openModal('modal2')">Read More</button>
+                    </div>
+                </article>
+                <article class="risk-factor-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Manage Stress Levels</h2>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-description">Implementing stress management techniques is crucial for maintaining overall well-being and supporting thyroid health.</p>
+                        <button class="read-more-btn" onclick="openModal('modal3')">Read More</button>
+                    </div>
+                </article>
+                <article class="risk-factor-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Monitor Medication Usage</h2>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-description">Certain medications can interfere with thyroid hormone production or affect how your body processes thyroid hormones. If you are taking any long-term medications, consult with your healthcare provider to understand their impact on your thyroid.</p>
+                        <button class="read-more-btn" onclick="openModal('modal4')">Read More</button>
+                    </div>
+                </article>
+                <article class="risk-factor-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Radiation Exposure</h2>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-description">Excessive radiation, particularly to the neck area, can damage the thyroid and increase the risk of thyroid cancer or other disorders.</p>
+                        <button class="read-more-btn" onclick="openModal('modal5')">Read More</button>
+                    </div>
+                </article>
+                <article class="risk-factor-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Autoimmune Conditions</h2>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-description">Autoimmune disorders like Hashimoto's Thyroiditis or Graves' Disease are common causes of thyroid dysfunction. If you have an autoimmune condition, managing it properly can reduce the risk of thyroid complications.</p>
+                        <button class="read-more-btn" onclick="openModal('modal6')">Read More</button>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modal1')">&times;</span>
+            <h2>Regular Health Screenings</h2>
+            <p>Learn more about thyroid health screenings: <a href="https://www.ncbi.nlm.nih.gov/books/NBK221542/" target="_blank">Thyroid Health Screenings</a></p>
+        </div>
+    </div>
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modal2')">&times;</span>
+            <h2>Maintain a Balanced Diet</h2>
+            <p>Discover thyroid-friendly diet tips: <a href="https://www.healthcentral.com/condition/thyroid/thyroid-diet-how-to-eat-with-a-thyroid-disorder" target="_blank">Thyroid Diet Guide</a></p>
+        </div>
+    </div>
+    <div id="modal3" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modal3')">&times;</span>
+            <h2>Manage Stress Levels</h2>
+            <p>Explore stress management techniques: <a href="https://drruscio.com/stress-and-thyroid/" target="_blank">Stress Management for Thyroid Health</a></p>
+        </div>
+    </div>
+    <div id="modal4" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modal4')">&times;</span>
+            <h2>Monitor Medication Usage</h2>
+            <p>Understand medication effects on thyroid: <a href="https://www.verywellhealth.com/thyroid-disease-medications-3231845" target="_blank">Medications and Thyroid Function</a></p>
+        </div>
+    </div>
+    <div id="modal5" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modal5')">&times;</span>
+            <h2>Radiation Exposure</h2>
+            <p>Learn about radiation risks to thyroid: <a href="https://www.thyroid.org/nuclear-radiation-thyroid/" target="_blank">Radiation and Thyroid Health</a></p>
+        </div>
+    </div>
+    <div id="modal6" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modal6')">&times;</span>
+            <h2>Autoimmune Conditions</h2>
+            <p>Understand autoimmune thyroid disorders: <a href="https://en.wikipedia.org/wiki/Hashimoto%27s_thyroiditis" target="_blank">Autoimmune Thyroid Conditions</a></p>
+        </div>
+    </div>
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = "block";
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+        window.onclick = function(event) {
+            if (event.target.className === "modal") {
+                event.target.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

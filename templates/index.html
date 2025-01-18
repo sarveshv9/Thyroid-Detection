@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thyroid Prediction</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="container-head">
+        <nav class="nav">
+            <div class="logo">ThyroPredict</div>
+            <ul class="nav-list">
+              <li class="nav-item"><a href="http://127.0.0.1:5000/#" class="nav-link">Home</a></li>
+              <li class="nav-item"><a href="http://127.0.0.1:5000/aboutus" class="nav-link">About</a></li>
+              <li class="nav-item"><a href="http://127.0.0.1:5000/predict" class="nav-link">Predict</a></li>
+              <li class="nav-item"><a href="http://127.0.0.1:5000/map" class="nav-link">Find a Doc</a></li>
+              <li class="nav-item"><a href="http://127.0.0.1:5000/riskfac" class="nav-link">Risk Factors</a></li>
+          </ul>
+        </nav>
+    </div>
+</header>
+       
+<div class="container">
+  <div class="form-container">
+    <h2>Thyroid Prediction Input</h2>
+    <form  id="thyroidForm" method="POST" action="/predict">
+      <div class="form-group">
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age" required>
+      </div>
+
+      <div class="form-group">
+        <label for="sex">Sex:</label>
+        <select id="sex" name="sex" required>
+          <option value="0">Female</option>
+          <option value="1">Male</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="on_thyroxine">On Thyroxine:</label>
+        <select id="on_thyroxine" name="on_thyroxine" required>
+          <option value="0">No</option>
+          <option value="1">Yes</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="on_antithyroid_meds">On Antithyroid:</label>
+        <select id="on_antithyroid_meds" name="on_antithyroid_meds" required>
+          <option value="0">No</option>
+          <option value="1">Yes</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="I131_treatment">I131 Treatment:</label>
+        <select id="I131_treatment" name="I131_treatment" required>
+          <option value="0">No</option>
+          <option value="1">Yes</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="TSH">TSH:</label>
+        <input type="number" id="TSH" name="TSH" step="any" required>
+      </div>
+
+      <div class="form-group">
+        <label for="T3">T3:</label>
+        <input type="number" id="T3" name="T3" step="any" required>
+      </div>
+
+      <div class="form-group">
+        <label for="TT4">TT4:</label>
+        <input type="number" id="TT4" name="TT4" step="any" required>
+      </div>
+      <div class="form-group">
+        <input type="submit" value="Predict">
+      </div>
+
+    </form>
+  </div>
+</main> 
+
+  <div class="result-container">
+    <h2>Prediction Result</h2>
+    {% if prediction %}
+      <p class="result-text">The patient is diagnosed with: <strong>{{ prediction }}</strong></p>
+      
+      <canvas id="thyroidChart"></canvas>
+      
+      <div class="recommendations">
+        {% if prediction == "Overt Hyperthyroidism" %}
+          <p>Recommendation: Consult an endocrinologist for appropriate. Regular monitoring of thyroid levels is necessary. Dietary adjustments may also be recommended.</p>
+        {% elif prediction == "Overt Hypothyroidism" %}
+          <p>Recommendation: You might need thyroid hormone replacement therapy. Regular follow-up with your healthcare provider is important. Maintain a balanced diet and monitor symptoms.</p>
+        {% elif prediction == "Subclinical Hyperthyroidism" %}
+          <p>Recommendation: Periodic monitoring of thyroid function is suggested. Your doctor may suggest lifestyle changes or treatments depending on symptoms.</p>
+        {% elif prediction == "Subclinical Hypothyroidism" %}
+          <p>Recommendation: Regular monitoring of thyroid levels is advised. Discuss with your doctor whether treatment is needed based on your symptoms and thyroid function tests.</p>
+        {% else %}
+          <p>Recommendation: No specific recommendations available. Please consult a healthcare provider for further advice.</p>
+        {% endif %}
+      </div>
+    {% else %}
+      <p class="result-text">No result to show yet. Please submit the form to get a prediction.</p>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+        let thyroidChart = null;
+
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create initial empty chart
+            createThyroidChart({
+                TSH: 0,
+                T3: 0,
+                TT4: 0
+            });
+
+            document.getElementById('thyroidForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                const TSH = document.getElementById('TSH').value;
+                const T3 = document.getElementById('T3').value;
+                const TT4 = document.getElementById('TT4').value;
+
+                if (!TSH || !T3 || !TT4) {
+                    alert('Please fill in all fields.');
+                    return;
+                }
+
+                const userData = {
+                    TSH: parseFloat(TSH),
+                    T3: parseFloat(T3),
+                    TT4: parseFloat(TT4)
+                };
+
+                createThyroidChart(userData);
+            });
+        });
+
+        function createThyroidChart(userData) {
+            const canvas = document.getElementById('thyroidChart');
+            const ctx = canvas.getContext('2d');
+
+            const normalRanges = {
+                TSH: [0.4, 4.0],
+                T3: [0.8, 2.0],
+                TT4: [80.5, 110.2]
+            };
+
+            const labels = ['TSH', 'T3', 'TT4'];
+            const normalMin = labels.map(label => normalRanges[label][0]);
+            const normalMax = labels.map(label => normalRanges[label][1]);
+            const userHormoneLevels = labels.map(label => userData[label]);
+
+            if (thyroidChart) {
+                thyroidChart.destroy();
+            }
+
+            thyroidChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'User Levels',
+                            data: userHormoneLevels,
+                            backgroundColor: 'rgba(0, 255, 204, 0.7)',
+                            borderColor: 'rgba(0, 255, 204, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Normal Minimum',
+                            data: normalMin,
+                            backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                            borderColor: 'rgba(0, 123, 255, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Normal Maximum',
+                            data: normalMax,
+                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            type: 'logarithmic',
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Hormone Levels'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

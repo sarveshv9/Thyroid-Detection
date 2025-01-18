@@ -1,0 +1,218 @@
+:root {
+    --primary-color: #00adb5;
+    --secondary-color: #393e46;
+    --background-color: #222831;
+    --text-color: #eeeeee;
+}
+
+html {
+    overflow-y: scroll; 
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    min-height: 100vh;
+}
+
+.header {
+    background-color: var(--secondary-color);
+    padding: 20px 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.nav-list {
+    display: flex;
+    list-style-type: none;
+}
+
+.nav-item {
+    margin-left: 30px;
+}
+
+.nav-link {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-weight: 500;
+    position: relative;
+}
+
+.nav-link.active {
+    color: var(--primary-color); 
+    font-weight: bold;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+.thyroid-health-section {
+    background-color: var(--background-color);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin-top: 80px; 
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 5px;
+}
+
+.container-head {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+#map-container {
+    height: 500px;
+    width: 50%; 
+    border: 1px solid var(--text-color);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+#doctor-info-container {
+    padding: 20px;
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 50%;
+}
+
+#doctor-info-container h2 {
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    color: var(--text-color);
+}
+
+.accordion {
+    background-color: white;
+    border: 1px solid var(--secondary-color);
+    cursor: pointer;
+    padding: 15px;
+    width: 100%;
+    text-align: left;
+    outline: none;
+    font-size: 20px;
+    margin-bottom: 3px;
+    border-radius: 8px;
+}
+
+.accordion:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.panel {
+    padding: 0 15px;
+    background-color: white;
+    display: none;
+    overflow: hidden;
+    border-left: 1px solid var(--text-color);
+    border-right: 1px solid var(--text-color);
+    border-bottom: 1px solid var(--text-color);
+    border-radius: 8px;
+}
+
+.panel p {
+    padding: 5px 0;
+    font-size: 1.2em;
+    color: var(--secondary-color);
+    margin: 5px;
+}
+
+.panel a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.panel a:hover {
+    text-decoration: underline;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    font-size: 1em;
+    background-color: var(--primary-color);
+    color: white;
+    margin-top: 10px;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--background-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--secondary-color);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+    #doctor-info-container {
+        flex: 1;
+        margin-bottom: 20px;
+    }
+    #map-container {
+        height: 300px; 
+        width: 100%; 
+    }
+}

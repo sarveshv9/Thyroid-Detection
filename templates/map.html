@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Doctors and Hospitals Near Me</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/map.css') }}">
+    
+</head>
+<body>
+    <header class="header">
+        <div class="container-head">
+            <nav class="nav">
+                <div class="logo">ThyroPredict</div>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="http://127.0.0.1:5000/#" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="http://127.0.0.1:5000/aboutus" class="nav-link">About</a></li>
+                    <li class="nav-item"><a href="http://127.0.0.1:5000/predict" class="nav-link">Predict</a></li>
+                    <li class="nav-item"><a href="http://127.0.0.1:5000/map" class="nav-link">Find a Doc</a></li>
+                    <li class="nav-item"><a href="http://127.0.0.1:5000/riskfac" class="nav-link">Risk Factors</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="thyroid-health-section">
+        <div class="container">
+            <div id="doctor-info-container">
+                <h2>Endocrinologists in Navi Mumbai</h2>
+            
+                <button class="accordion">Dr. Pramod Bhinde</button>
+                <div class="panel">
+                    <p><strong>Specialty:</strong> Endocrinology</p>
+                    <p><strong>Address:</strong> Apollo Hospitals, Parsik Hill, Sector 23, CBD Belapur, Navi Mumbai, Maharashtra 400614</p>
+                    <p><strong>Phone:</strong> +91 22 2770 2771</p>
+                    <p><strong>Website:</strong> <a href="https://www.apollohospitals.com" target="_blank">Apollo Hospitals</a></p>
+                </div>
+            
+                <button class="accordion">Dr. Anil Bhoraskar</button>
+                <div class="panel">
+                    <p><strong>Specialty:</strong> Endocrinology</p>
+                    <p><strong>Address:</strong> Wockhardt Hospitals, Plot No. 54, Sector 18, Khargar, Navi Mumbai, Maharashtra 410210</p>
+                    <p><strong>Phone:</strong> +91 22 4915 5151</p>
+                    <p><strong>Website:</strong> <a href="https://www.wockhardthospitals.com" target="_blank">Wockhardt Hospitals</a></p>
+                </div>
+            
+                <button class="accordion">Dr. Shashank Joshi</button>
+                <div class="panel">
+                    <p><strong>Specialty:</strong> Endocrinology</p>
+                    <p><strong>Address:</strong> MGM New Bombay Hospital, Plot No. 35, Sector 3, Vashi, Navi Mumbai, Maharashtra 400703</p>
+                    <p><strong>Phone:</strong> +91 22 2789 9999</p>
+                    <p><strong>Website:</strong> <a href="https://www.mgmhospitalvashi.net" target="_blank">MGM New Bombay Hospital</a></p>
+                </div>
+            
+                <button class="accordion">Dr. Rajiv Kovil</button>
+                <div class="panel">
+                    <p><strong>Specialty:</strong> Endocrinology</p>
+                    <p><strong>Address:</strong> Fortis Hiranandani Hospital, Sector 10A, Vashi, Navi Mumbai, Maharashtra 400703</p>
+                    <p><strong>Phone:</strong> +91 22 6767 6767</p>
+                    <p><strong>Website:</strong> <a href="https://www.fortishealthcare.com" target="_blank">Fortis Hiranandani Hospital</a></p>
+                </div>
+            
+                <button class="accordion">Dr. Ameya Joshi</button>
+                <div class="panel">
+                    <p><strong>Specialty:</strong> Endocrinology</p>
+                    <p><strong>Address:</strong> Reliance Hospital, Plot No. 5, Sector 3, Koperkhairane, Navi Mumbai, Maharashtra 400709</p>
+                    <p><strong>Phone:</strong> +91 22 3968 3968</p>
+                    <p><strong>Website:</strong> <a href="https://www.reliancehospitals.com" target="_blank">Reliance Hospital</a></p>
+                </div>
+            </div>
+            <div id="map-container">
+                <div id="map"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 ThyroPredict. All rights reserved.</p>
+    </footer>
+
+    <script>
+        var acc = document.getElementsByClassName("accordion");
+        for (let i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var panel = this.nextElementSibling;
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
+        }
+
+        // Initialize Leaflet map
+        var map = L.map('map').setView([19.1109, 73.0149], 12); // Centered on Navi Mumbai
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        // Fetch data from Overpass API
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                var lat = position.coords.latitude;
+                var lon = position.coords.longitude;
+                map.setView([lat, lon], 14);
+
+                L.marker([lat, lon]).addTo(map).bindPopup("You are here!").openPopup();
+
+                // Fetch hospitals and doctors using Overpass API with a medium search radius (5000m)
+                var query = `
+                [out:json];
+                (
+                  node["amenity"="hospital"](around:5000, ${lat}, ${lon});
+                  node["amenity"="doctor"](around:5000, ${lat}, ${lon});
+                );
+                out body;
+                `;
+
+                fetch("https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query))
+                .then(response => response.json())
+                .then(data => {
+                    data.elements.forEach(element => {
+                        if (element.tags && element.tags.name) {
+                            var marker = L.marker([element.lat, element.lon]).addTo(map);
+                            marker.bindPopup(element.tags.name);
+                        }
+                    });
+                })
+                .catch(err => {
+                    console.error('Error fetching data from Overpass API:', err);
+                });
+            },
+            function() {
+                alert("Unable to retrieve your location.");
+            }
+        );
+    </script>
+</body>
+</html>

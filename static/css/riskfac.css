@@ -1,0 +1,283 @@
+:root {
+    --primary-color: #00adb5;
+    --secondary-color: #393e46;
+    --background-color: #222831;
+    --text-color: #eeeeee;
+    --card-bg: #ffffff;
+    --card-hover-shadow: rgba(0, 0, 0, 0.2);
+    --modal-bg: rgba(0, 0, 0, 0.4);
+    --read-more-hover: #16423C;
+    --modal-border: #888;
+    --modal-content-bg: #fefefe;
+    --modal-content-text: #222831;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    min-height: 100vh;
+}
+
+html {
+    overflow-y: scroll; 
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.header {
+    background-color: var(--secondary-color);
+    padding: 20px 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.container-head {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.nav-list {
+    display: flex;
+    list-style-type: none;
+}
+
+.nav-item {
+    margin-left: 30px;
+}
+
+.nav-link {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-weight: 500;
+    position: relative;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+}
+
+.thyroid-risk-section {
+    background: linear-gradient(135deg, var(--background-color) 0%, var(--card-bg) 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 70px 80px;
+    margin-top: 60px;
+}
+
+.content-wrapper {
+    display: flex;
+    width: 100%;
+    max-width: 1138px;
+    flex-direction: column;
+}
+
+.section-title {
+    color: var(--primary-color);
+    text-shadow: 0 8px 12px rgba(0, 0, 0, 0.15), 0 4px 4px rgba(0, 0, 0, 0.3);
+    font: 700 48px 'Inter', sans-serif;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.risk-factors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    width: 100%;
+}
+
+.risk-factor-card {
+    border-radius: 20px;
+    background-color: var(--card-bg);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.risk-factor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px var(--card-hover-shadow);
+}
+
+.card-header {
+    background-color: var(--primary-color);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 70%);
+    transform: rotate(45deg);
+}
+
+.card-title {
+    color: var(--text-color);
+    font-size: 24px;
+    margin: 0;
+    position: relative;
+}
+
+.card-body {
+    padding: 30px;
+    flex-grow: 1;
+    background: linear-gradient(to bottom, var(--card-bg) 0%, #f5f5f5 100%);
+}
+
+.card-description {
+    color: var(--modal-content-text);
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.read-more-btn {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.read-more-btn:hover {
+    background-color: var(--read-more-hover);
+    transform: scale(1.05);
+}
+
+.read-more-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 172, 193, 0.5);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: var(--modal-bg);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: var(--modal-content-bg);
+    color: var(--modal-content-text);
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid var(--modal-border);
+    width: 80%;
+    max-width: 600px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: modalFadeIn 0.3s;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--background-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--secondary-color);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.close {
+    color: var(--secondary-color);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.close:hover,
+.close:focus {
+    color: var(--primary-color);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+@media (max-width: 991px) {
+    .thyroid-risk-section {
+        padding: 50px 20px;
+    }
+
+    .section-title {
+        font-size: 36px;
+    }
+
+    .risk-factors-grid {
+        grid-template-columns: 1fr;
+    }
+}
