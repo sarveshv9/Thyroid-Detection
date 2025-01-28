@@ -16,6 +16,7 @@ The Thyroid Detection and Classification System is a machine learning project de
 ## Technologies Used
 𝗣𝗿𝗼𝗴𝗿𝗮𝗺𝗺𝗶𝗻𝗴 𝗟𝗮𝗻𝗴𝘂𝗮𝗴𝗲: 
 - Python
+- HTML, CSS, Javascript
   
 𝗟𝗶𝗯𝗿𝗮𝗿𝗶𝗲𝘀: 
 - Scikit-learn 
