@@ -3,16 +3,16 @@
   --secondary-color: #393e46;
   --background-color: #222831;
   --text-color: #eeeeee;
-  --light-gray: #f2f2f2;
+  --light-gray: #2f3640;
   --dark-gray: #333;
-  --medium-gray: #555;
-  --light-medium-gray: #666;
-  --card-background: #3d424e;
+  --medium-gray: #aaa;
+  --light-medium-gray: #ccc;
+  --card-background: #2c2f3a;
   --hover-primary: #008c94;
 }
 
 html {
-  overflow-y: scroll; 
+  overflow-y: scroll;
 }
 
 * {
@@ -25,7 +25,7 @@ body {
   font-family: 'Inter', sans-serif;
   line-height: 1.6;
   color: var(--text-color);
-  background-color: var(--background-color);
+  background: linear-gradient(135deg, #1b1f27, #222831);
   min-height: 100vh;
 }
 
@@ -119,7 +119,7 @@ body {
 }
 
 .about-us {
-  background-color: var(--light-gray);
+  background: linear-gradient(135deg, #1b1f27, #222831);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -127,6 +127,7 @@ body {
   justify-content: center;
   padding: 109px 80px;
 }
+
 
 .content-wrapper {
   display: flex;
@@ -155,7 +156,7 @@ body {
   width: 100%;
   height: auto;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .text-column {
@@ -168,7 +169,7 @@ body {
 }
 
 .section-title {
-  color: var(--dark-gray);
+  color: var(--primary-color);
   font-size: 48px;
   font-weight: 700;
   margin-bottom: 20px;
@@ -216,7 +217,7 @@ body {
 
 .team-member:hover {
   transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 .member-content {
@@ -289,37 +290,37 @@ body {
 
 @media (max-width: 991px) {
   .about-us {
-      padding: 60px 20px;
+    padding: 60px 20px;
   }
 
   .info-container {
-      flex-direction: column;
-      align-items: stretch;
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .image-column {
-      max-width: 100%;
-      margin-bottom: 30px;
+    max-width: 100%;
+    margin-bottom: 30px;
   }
 
   .section-title {
-      font-size: 36px;
+    font-size: 36px;
   }
 
   .highlight-text {
-      font-size: 28px;
+    font-size: 28px;
   }
 
   .description {
-      font-size: 16px;
+    font-size: 16px;
   }
 
   .team-row {
-      flex-direction: column;
+    flex-direction: column;
   }
 
   .team-member {
-      margin-bottom: 20px;
+    margin-bottom: 20px;
   }
 }
 

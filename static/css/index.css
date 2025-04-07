@@ -16,7 +16,7 @@
 }
 
 html {
-    overflow-y: auto; 
+    overflow-y: auto;
 }
 
 body {
@@ -24,15 +24,15 @@ body {
     line-height: 1.6;
     color: var(--color-light);
     background-color: var(--color-dark);
-    height: 100vh; 
+    height: 100vh;
 }
 
 .thyroid-health-section {
-    background-color: var(--color-dark);
+    background: linear-gradient(135deg, #1e1e2f, #2d2d3f, #222831);
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    height: calc(100vh - 80px); 
+    height: calc(100vh - 80px);
     margin-top: 80px;
 }
 
@@ -107,7 +107,8 @@ body {
     padding: 0 20px;
 }
 
-.form-container, .result-container {
+.form-container,
+.result-container {
     width: 48%;
     background-color: var(--color-secondary-dark);
     color: var(--color-primary-text);
@@ -134,7 +135,9 @@ h2 {
     color: var(--color-input-bg);
 }
 
-.form-group input[type="text"], input[type="number"], .form-group select {
+.form-group input[type="text"],
+input[type="number"],
+.form-group select {
     flex: 1;
     padding: 10px;
     margin-left: 10px;
@@ -194,7 +197,8 @@ h2 {
 }
 
 @media (max-width: 768px) {
-    .form-container, .result-container {
+    .form-container,
+    .result-container {
         width: 100%;
         margin-bottom: 20px;
     }
