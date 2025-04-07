@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thyroid Health Section</title>
+    <style>
+        :root {
+            --primary-color: #00adb5;
+            --secondary-color: #393e46;
+            --background-color: #222831;
+            --text-color: #eeeeee;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .section {
+            padding: 80px 0;
+        }
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #008c94;
+        }
+        .header {
+            background-color: var(--secondary-color);
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        .nav-list {
+            display: flex;
+            list-style-type: none;
+        }
+        .nav-item {
+            margin-left: 30px;
+        }
+        .nav-link {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-weight: 500;
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+        .hero {
+            background-image: url('https://cdn.builder.io/api/v1/image/assets/TEMP/eef0df6593a7e4b409050695e950a92d49f2f08d85b67693d09b811cc79e4c8b?placeholderIfAbsent=true&apiKey=614dc62a3efe40d8a5cdd9b4441b96ec');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+        }
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .hero-title {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+        }
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+        .about {
+            background-color: var(--secondary-color);
+        }
+        .about-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .about-image {
+            flex: 1;
+            margin-right: 40px;
+        }
+        .about-image img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+        .about-text {
+            flex: 1;
+        }
+        .symptoms {
+            background-color: var(--primary-color);
+        }
+        .symptom-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        .symptom-card {
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .symptom-card:hover {
+            transform: translateY(-5px);
+        }
+        .symptom-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        .contact {
+            background-color: var(--secondary-color);
+        }
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: var(--background-color);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--primary-color);
+            background-color: transparent;
+            color: var(--text-color);
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #008c94;
+        }
+        .form-textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        .footer {
+            background-color: var(--secondary-color);
+            text-align: center;
+            padding: 20px 0;
+        }
+        .contact-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+        }
+        .contact-icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+        .sitemap {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+        .sitemap-column {
+            flex: 1;
+        }
+        .sitemap-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        .sitemap-list {
+            list-style-type: none;
+        }
+        .sitemap-item {
+            margin-bottom: 10px;
+        }
+        .sitemap-link {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .sitemap-link:hover {
+            color: var(--primary-color);
+        }
+        @media screen and (max-width: 768px) {
+            .about-content {
+                flex-direction: column;
+            }
+            .about-image {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+            .symptom-grid {
+                grid-template-columns: 1fr;
+            }
+            .nav-list {
+                display: none;
+            }
+            .contact-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .contact-item {
+                margin-bottom: 20px;
+            }
+            .sitemap {
+                flex-direction: column;
+            }
+            .sitemap-column {
+                margin-bottom: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">ThyroPredict</div>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="http://127.0.0.1:5000/#" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="http://127.0.0.1:5000/aboutus" class="nav-link">About</a></li>
+                    <li class="nav-item"><a href="http://127.0.0.1:5000/predict" class="nav-link">Predict</a></li>
+                    <li class="nav-item"><a href="http://127.0.0.1:5000/map" class="nav-link">Find a Doc</a></li>
+                    <li class="nav-item"><a href="http://127.0.0.1:5000/riskfac" class="nav-link">Risk Factors</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Take Control of Your Thyroid Health</h1>
+                <p class="hero-subtitle">Understand, manage, and improve your thyroid function</p>
+                <a href="index.html" class="btn">Learn More</a>
+            </div>
+        </div>
+    </section>
+    <section class="about section">
+        <div class="container">
+            <h2 class="section-title">About Us</h2>
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="about-image.jpg" alt="Thyroid illustration">
+                </div>
+                <div class="about-text">
+                    <h3>Take Control of Your <span style="color: var(--primary-color);">Thyroid</span> Health</h3>
+                    <p>Worried about your thyroid health? Our user-friendly thyroid page is designed to provide you with valuable information and personalized insights. By answering a few simple questions, you can gain a better understanding of your thyroid function and take steps towards optimal health.</p>
+                    <a href="http://127.0.0.1:5000/aboutus" class="btn">Read More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="symptoms section">
+        <div class="container">
+          <h2 class="section-title" style="color: white;">Common Thyroid Symptoms</h2>
+
+            <div class="symptom-grid">
+                <div class="symptom-card">
+                    <div class="symptom-icon">🥱</div>
+                    <h3>Fatigue</h3>
+                    <p>Persistent tiredness and lack of energy</p>
+                </div>
+                <div class="symptom-card">
+                    <div class="symptom-icon">🧊</div>
+                    <h3>Cold Sensitivity</h3>
+                    <p>Feeling cold when others are comfortable</p>
+                </div>
+                <div class="symptom-card">
+                    <div class="symptom-icon">⚖️</div>
+                    <h3>Weight Changes</h3>
+                    <p>Unexplained weight gain or loss</p>
+                </div>
+                <div class="symptom-card">
+                    <div class="symptom-icon">😔</div>
+                    <h3>Mood Changes</h3>
+                    <p>Depression or anxiety</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="contact section">
+        <div class="container">
+            <h2 class="section-title">Contact Us</h2>
+            <form class="contact-form">
+                <div class="form-group">
+                    <label for="name" class="form-label">Your Name</label>
+                    <input type="text" id="name" name="name" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="form-label">Your Email</label>
+                    <input type="email" id="email" name="email" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="message" class="form-label">Your Message</label>
+                    <textarea id="message" name="message" class="form-textarea" required></textarea>
+                </div>
+                <button type="submit" class="btn">Send Message</button>
+            </form>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span class="contact-icon">📞</span>
+                    <span>(123) 456-7890</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">✉️</span>
+                    <span>info@thyroidhealth.com</span>
+                </div>
+            </div>
+            <div class="sitemap">
+                <div class="sitemap-column">
+                    <h4 class="sitemap-title">Quick Links</h4>
+                    <ul class="sitemap-list">
+                        <li class="sitemap-item"><a href="#" class="sitemap-link">Home</a></li>
+                        <li class="sitemap-item"><a href="#" class="sitemap-link">About Us</a></li>
+                        <li class="sitemap-item"><a href="#" class="sitemap-link">Symptoms</a></li>
+                        <li class="sitemap-item"><a href="#" class="sitemap-link">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="sitemap-column">
+                    <h4 class="sitemap-title">Resources</h4>
+                    <ul class="sitemap-list">
+                        <li class="sitemap-item"><a href="#" class="sitemap-link">Thyroid Guide</a></li>
+                        <li class="sitemap-item"><a href="#" class="sitemap-link">FAQ</a></li>
+                        <li class="sitemap-item"><a href="#" class="sitemap-link">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="sitemap-column">
+                    <h4 class="sitemap-title">Legal</h4>
+                    <ul class="sitemap-list">
+                        <li class="sitemap-item"><a href="#" class="sitemap-link">Privacy Policy</a></li>
+                        <li class="sitemap-item"><a href="#" class="sitemap-link">Terms of Service</a></li>
+                        <li class="sitemap-item"><a href="#" class="sitemap-link">Disclaimer</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+        <FILE path="thyroid-health-section.html">
+        <p>&copy; 2023 Thyroid Health. All rights reserved.</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('.contact-form');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const message = document.getElementById('message').value;
+                if (name && email && message) {
+                    alert('Thank you for your message. We will get back to you soon!');
+                    form.reset();
+                } else {
+                    alert('Please fill in all fields.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
