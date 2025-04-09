@@ -3,14 +3,6 @@
     --secondary-color: #393e46;
     --background-color: #222831;
     --text-color: #eeeeee;
-    --scrollbar-track: #E9EFEC;
-    --scrollbar-thumb: #6A9C89;
-    --scrollbar-hover: #16423C;
-    --btn-hover: #123B36;
-}
-
-html {
-    overflow-y: scroll; 
 }
 
 * {
@@ -24,7 +16,6 @@ body {
     line-height: 1.6;
     color: var(--text-color);
     background-color: var(--background-color);
-    min-height: 100vh;
 }
 
 .container {
@@ -35,6 +26,29 @@ body {
 
 .section {
     padding: 80px 0;
+    position: relative;
+    overflow: hidden;
+    animation: fadeInSection 1.2s ease-in-out both;
+}
+
+.section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 173, 181, 0.08), rgba(34, 40, 49, 0.95));
+    z-index: 1;
+    pointer-events: none;
+}
+
+@keyframes fadeInSection {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .section-title {
@@ -42,6 +56,8 @@ body {
     text-align: center;
     margin-bottom: 40px;
     color: var(--primary-color);
+    position: relative;
+    z-index: 2;
 }
 
 .btn {
@@ -52,10 +68,11 @@ body {
     text-decoration: none;
     border-radius: 5px;
     transition: background-color 0.3s ease;
+    font-weight: 500;
 }
 
 .btn:hover {
-    background-color: var(--btn-hover);
+    background-color: #008c94;
 }
 
 .header {
@@ -112,7 +129,7 @@ body {
     width: 100%;
 }
 
-.nav-link:hover {            
+.nav-link:hover {
     color: var(--primary-color);
 }
 
@@ -124,11 +141,22 @@ body {
     display: flex;
     align-items: center;
     text-align: center;
+    position: relative;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(34, 40, 49, 0.6), rgba(0, 173, 181, 0.3));
+    z-index: 1;
 }
 
 .hero-content {
     max-width: 800px;
     margin: 0 auto;
+    position: relative;
+    z-index: 2;
 }
 
 .hero-title {
@@ -141,38 +169,85 @@ body {
     margin-bottom: 30px;
 }
 
+/* ABOUT SECTION */
+/* ABOUT SECTION */
 .about {
-    background-color: var(--secondary-color);
+background-color: var(--secondary-color);
+position: relative;
+overflow: hidden;
+padding: 80px 0;
+animation: fadeInSection 1.2s ease-in-out both;
+}
+
+.about::before {
+content: '';
+position: absolute;
+inset: 0;
+background: linear-gradient(135deg, rgba(0, 173, 181, 0.08), rgba(34, 40, 49, 0.95));
+z-index: 1;
+pointer-events: none;
 }
 
 .about-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+display: flex;
+flex-direction: row;
+align-items: center;
+justify-content: space-between;
+gap: 40px;
+position: relative;
+z-index: 2;
+flex-wrap: wrap;
 }
 
 .about-image {
-    flex: 1;
-    margin-right: 40px;
+flex: 1;
+overflow: hidden;
+border-radius: 10px;
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+transition: transform 0.3s ease-in-out;
 }
 
 .about-image img {
-    max-width: 100%;
-    border-radius: 10px;
+width: 100%;
+border-radius: 10px;
+transition: transform 0.5s ease;
+}
+
+.about-image:hover img {
+transform: scale(1.05);
 }
 
 .about-text {
-    flex: 1;
+flex: 1;
+color: var(--text-color);
 }
 
+.about-text h2 {
+font-size: 2rem;
+color: var(--primary-color);
+margin-bottom: 20px;
+}
+
+.about-text p {
+font-size: 1.1rem;
+line-height: 1.8;
+color: var(--text-color);
+}
+
+
+/* SYMPTOMS SECTION */
 .symptoms {
     background-color: var(--primary-color);
+    position: relative;
+    overflow: hidden;
 }
 
 .symptom-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 30px;
+    position: relative;
+    z-index: 2;
 }
 
 .symptom-card {
@@ -181,6 +256,7 @@ body {
     padding: 20px;
     text-align: center;
     transition: transform 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
 }
 
 .symptom-card:hover {
@@ -192,8 +268,11 @@ body {
     margin-bottom: 15px;
 }
 
+/* CONTACT SECTION */
 .contact {
     background-color: var(--secondary-color);
+    position: relative;
+    overflow: hidden;
 }
 
 .contact-form {
@@ -202,7 +281,9 @@ body {
     background-color: var(--background-color);
     padding: 40px;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 2;
 }
 
 .form-group {
@@ -229,7 +310,7 @@ body {
 .form-input:focus,
 .form-textarea:focus {
     outline: none;
-    border-color: var(--btn-hover);
+    border-color: #008c94;
 }
 
 .form-textarea {
@@ -237,16 +318,12 @@ body {
     resize: vertical;
 }
 
-.footer {
-    background-color: var(--secondary-color);
-    text-align: center;
-    padding: 20px 0;
-}
-
 .contact-info {
     display: flex;
     justify-content: space-between;
     margin-top: 40px;
+    position: relative;
+    z-index: 2;
 }
 
 .contact-item {
@@ -264,6 +341,8 @@ body {
     display: flex;
     justify-content: space-between;
     margin-top: 40px;
+    position: relative;
+    z-index: 2;
 }
 
 .sitemap-column {
@@ -295,48 +374,65 @@ body {
     color: var(--primary-color);
 }
 
+footer {
+    text-align: center;
+    padding: 10px;
+    font-size: 1em;
+    background-color: var(--primary-color);
+    color: white;
+    margin-top: 10px;
+}
+
+/* RESPONSIVE */
+@media screen and (max-width: 768px) {
+    .about-content {
+        flex-direction: column;
+    }
+
+    .about-image {
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+
+    .symptom-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .nav-list {
+        display: none;
+    }
+
+    .contact-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .contact-item {
+        margin-bottom: 20px;
+    }
+
+    .sitemap {
+        flex-direction: column;
+    }
+
+    .sitemap-column {
+        margin-bottom: 30px;
+    }
+}
+
 ::-webkit-scrollbar {
     width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--scrollbar-track);
+    background: var(--color-dark);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--scrollbar-thumb);
+    background: var(--color-secondary-dark);
     border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--scrollbar-hover);
-}
-
-@media screen and (max-width: 768px) {
-    .about-content {
-        flex-direction: column;
-    }
-    .about-image {
-        margin-right: 0;
-        margin-bottom: 20px;
-    }
-    .symptom-grid {
-        grid-template-columns: 1fr;
-    }
-    .nav-list {
-        display: none;
-    }
-    .contact-info {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .contact-item {
-        margin-bottom: 20px;
-    }
-    .sitemap {
-        flex-direction: column;
-    }
-    .sitemap-column {
-        margin-bottom: 30px;
-    }
+    background: var(--color-accent);
 }

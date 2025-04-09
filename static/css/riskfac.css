@@ -3,25 +3,41 @@
     --secondary-color: #393e46;
     --background-color: #222831;
     --text-color: #eeeeee;
-    --card-bg: #ffffff;
+    --card-bg: #393e46;
     --card-hover-shadow: rgba(0, 0, 0, 0.2);
     --modal-bg: rgba(0, 0, 0, 0.4);
     --read-more-hover: #16423C;
     --modal-border: #888;
     --modal-content-bg: #fefefe;
-    --modal-content-text: #222831;
+    --modal-content-text: #eeeeee;
 }
 
-body {
+html, body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
     font-family: 'Inter', sans-serif;
     line-height: 1.6;
     color: var(--text-color);
     background-color: var(--background-color);
-    min-height: 100vh;
+    scroll-behavior: smooth;
+    position: relative;
 }
 
-html {
-    overflow-y: scroll; 
+html::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(135deg, rgba(0, 173, 181, 0.08), rgba(34, 40, 49, 0.95));
+    pointer-events: none;
+}
+
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 * {
@@ -95,12 +111,13 @@ html {
 }
 
 .thyroid-risk-section {
-    background: linear-gradient(135deg, var(--background-color) 0%, var(--card-bg) 100%);
+    background: linear-gradient(135deg, #1e1e2f, #2d2d3f, #222831);
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 70px 80px;
-    margin-top: 60px;
+    padding: 80px 20px;
+    margin-top: 80px;
+    flex: 1;
 }
 
 .content-wrapper {
@@ -112,8 +129,7 @@ html {
 
 .section-title {
     color: var(--primary-color);
-    text-shadow: 0 8px 12px rgba(0, 0, 0, 0.15), 0 4px 4px rgba(0, 0, 0, 0.3);
-    font: 700 48px 'Inter', sans-serif;
+    font: 700 2.5rem 'Inter', sans-serif;
     margin-bottom: 40px;
     text-align: center;
 }
@@ -126,13 +142,15 @@ html {
 }
 
 .risk-factor-card {
-    border-radius: 20px;
     background-color: var(--card-bg);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    color: var(--text-color);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     display: flex;
+    border-radius: 20px;
     flex-direction: column;
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeInSection 1s ease-in-out both;
 }
 
 .risk-factor-card:hover {
@@ -168,11 +186,11 @@ html {
 .card-body {
     padding: 30px;
     flex-grow: 1;
-    background: linear-gradient(to bottom, var(--card-bg) 0%, #f5f5f5 100%);
+    background: var(--secondary-color);
 }
 
 .card-description {
-    color: var(--modal-content-text);
+    color: var(--text-color);
     font-size: 16px;
     line-height: 1.6;
 }
@@ -181,8 +199,8 @@ html {
     background-color: var(--primary-color);
     color: var(--text-color);
     border: none;
+    border-radius: 7px;
     padding: 10px 20px;
-    border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
     margin-top: 20px;
@@ -220,9 +238,17 @@ html {
     border: 1px solid var(--modal-border);
     width: 80%;
     max-width: 600px;
-    border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     animation: modalFadeIn 0.3s;
+}
+
+footer {
+    text-align: center;
+    padding: 15px;
+    font-size: 1em;
+    background-color: var(--primary-color);
+    color: white;
+    margin-top: auto;
 }
 
 ::-webkit-scrollbar {
@@ -246,6 +272,17 @@ html {
     from {
         opacity: 0;
         transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInSection {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
     }
     to {
         opacity: 1;
