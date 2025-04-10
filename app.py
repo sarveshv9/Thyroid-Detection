@@ -51,7 +51,8 @@ def predict():
         
         result = thyroid_stage.get(prediction, "Unknown")
 
-        return render_template('index.html', prediction=result)
+        return render_template('index.html', prediction=result, TSH=TSH, T3=T3, TT4=TT4)
+
 
     return render_template('index.html')
 
