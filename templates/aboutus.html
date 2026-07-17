@@ -13,11 +13,11 @@
       <nav class="nav">
           <div class="logo">ThyroPredict</div>
           <ul class="nav-list">
-            <li class="nav-item"><a href="http://127.0.0.1:5000/#" class="nav-link">Home</a></li>
-            <li class="nav-item"><a href="http://127.0.0.1:5000/aboutus" class="nav-link">About</a></li>
-            <li class="nav-item"><a href="http://127.0.0.1:5000/predict" class="nav-link">Predict</a></li>
-            <li class="nav-item"><a href="http://127.0.0.1:5000/map" class="nav-link">Find a Doc</a></li>
-            <li class="nav-item"><a href="http://127.0.0.1:5000/riskfac" class="nav-link">Risk Factors</a></li>
+            <li class="nav-item"><a href="{{ url_for('home') }}" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="{{ url_for('about_us') }}" class="nav-link">About</a></li>
+            <li class="nav-item"><a href="{{ url_for('predict') }}" class="nav-link">Predict</a></li>
+            <li class="nav-item"><a href="{{ url_for('map_page') }}" class="nav-link">Find a Doc</a></li>
+            <li class="nav-item"><a href="{{ url_for('risk_factors') }}" class="nav-link">Risk Factors</a></li>
         </ul>
       </nav>
   </div>

@@ -13,11 +13,11 @@
             <nav class="nav">
                 <div class="logo">ThyroPredict</div>
                 <ul class="nav-list">
-                    <li class="nav-item"><a href="http://127.0.0.1:5000/#" class="nav-link">Home</a></li>
-                    <li class="nav-item"><a href="http://127.0.0.1:5000/aboutus" class="nav-link">About</a></li>
-                    <li class="nav-item"><a href="http://127.0.0.1:5000/predict" class="nav-link">Predict</a></li>
-                    <li class="nav-item"><a href="http://127.0.0.1:5000/map" class="nav-link">Find a Doc</a></li>
-                    <li class="nav-item"><a href="http://127.0.0.1:5000/riskfac" class="nav-link">Risk Factors</a></li>
+                    <li class="nav-item"><a href="{{ url_for('home') }}" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="{{ url_for('about_us') }}" class="nav-link">About</a></li>
+                    <li class="nav-item"><a href="{{ url_for('predict') }}" class="nav-link">Predict</a></li>
+                    <li class="nav-item"><a href="{{ url_for('map_page') }}" class="nav-link">Find a Doc</a></li>
+                    <li class="nav-item"><a href="{{ url_for('risk_factors') }}" class="nav-link">Risk Factors</a></li>
                 </ul>
             </nav>
         </div>
@@ -43,7 +43,7 @@
                 <div class="about-text" data-aos="fade-left">
                     <h3>Take Control of Your <span style="color: var(--primary-color);">Thyroid</span> Health</h3>
                     <p>Worried about your thyroid health? Our user-friendly thyroid page is designed to provide you with valuable information and personalized insights. By answering a few simple questions, you can gain a better understanding of your thyroid function and take steps towards optimal health.</p>
-                    <a href="http://127.0.0.1:5000/aboutus" class="btn">Read More</a>
+                    <a href="{{ url_for('about_us') }}" class="btn">Read More</a>
                 </div>
             </div>
         </div>

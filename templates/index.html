@@ -14,11 +14,11 @@
         <nav class="nav">
             <div class="logo">ThyroPredict</div>
             <ul class="nav-list">
-              <li class="nav-item"><a href="http://127.0.0.1:5000/#" class="nav-link">Home</a></li>
-              <li class="nav-item"><a href="http://127.0.0.1:5000/aboutus" class="nav-link">About</a></li>
-              <li class="nav-item"><a href="http://127.0.0.1:5000/predict" class="nav-link">Predict</a></li>
-              <li class="nav-item"><a href="http://127.0.0.1:5000/map" class="nav-link">Find a Doc</a></li>
-              <li class="nav-item"><a href="http://127.0.0.1:5000/riskfac" class="nav-link">Risk Factors</a></li>
+              <li class="nav-item"><a href="{{ url_for('home') }}" class="nav-link">Home</a></li>
+              <li class="nav-item"><a href="{{ url_for('about_us') }}" class="nav-link">About</a></li>
+              <li class="nav-item"><a href="{{ url_for('predict') }}" class="nav-link">Predict</a></li>
+              <li class="nav-item"><a href="{{ url_for('map_page') }}" class="nav-link">Find a Doc</a></li>
+              <li class="nav-item"><a href="{{ url_for('risk_factors') }}" class="nav-link">Risk Factors</a></li>
           </ul>
         </nav>
     </div>
@@ -118,32 +118,11 @@
 
         // Wait for DOM to be fully loaded
         document.addEventListener('DOMContentLoaded', function() {
-            // Create initial empty chart
+            // Create chart with Jinja variables (defaulting to 0)
             createThyroidChart({
-                TSH: 0,
-                T3: 0,
-                TT4: 0
-            });
-
-            document.getElementById('thyroidForm').addEventListener('submit', function(event) {
-                event.preventDefault();
-                
-                const TSH = document.getElementById('TSH').value;
-                const T3 = document.getElementById('T3').value;
-                const TT4 = document.getElementById('TT4').value;
-
-                if (!TSH || !T3 || !TT4) {
-                    alert('Please fill in all fields.');
-                    return;
-                }
-
-                const userData = {
-                    TSH: parseFloat(TSH),
-                    T3: parseFloat(T3),
-                    TT4: parseFloat(TT4)
-                };
-
-                createThyroidChart(userData);
+                TSH: {{ TSH | default(0) }},
+                T3: {{ T3 | default(0) }},
+                TT4: {{ TT4 | default(0) }}
             });
         });
 
