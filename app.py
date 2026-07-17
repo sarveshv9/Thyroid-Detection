@@ -16,7 +16,16 @@ THYROID_STAGE = {
 
 EXPECTED_FEATURES = ['age', 'sex', 'on_thyroxine', 'on_antithyroid_meds', 'I131_treatment', 'TSH', 'T3', 'TT4']
 
+import logging
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
 app = Flask(__name__)
+
+@app.route('/health')
+def health_check():
+    return {"status": "healthy"}, 200
 
 @app.after_request
 def add_security_headers(response):
@@ -68,6 +77,7 @@ def predict():
         try:
             prediction = model.predict(features)[0]
         except Exception as e:
+            logger.error(f"Prediction error: {e}", exc_info=True)
             return render_template('index.html', error="Prediction failed due to an internal error."), 500
 
         
@@ -84,6 +94,7 @@ def page_not_found(e):
 
 @app.errorhandler(500)
 def internal_server_error(e):
+    logger.error(f"Unhandled Exception: {e}", exc_info=True)
     return render_template('index.html', error="500 Error: An internal server error occurred."), 500
 
 if __name__ == '__main__':
