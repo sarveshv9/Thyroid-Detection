@@ -26,19 +26,24 @@ def risk_factors():
 @app.route('/predict', methods=['POST', 'GET'])
 def predict():
     if request.method == 'POST':
-       
-        age = float(request.form['age'])
-        sex = request.form['sex']  
-        on_thyroxine = int(request.form['on_thyroxine'])
-        on_antithyroid_meds = int(request.form['on_antithyroid_meds'])
-        I131_treatment = int(request.form['I131_treatment'])
-        TSH = float(request.form['TSH'])
-        T3 = float(request.form['T3'])
-        TT4 = float(request.form['TT4'])
+        try:
+            age = float(request.form.get('age', 0))
+            sex = request.form.get('sex', 'F')  
+            on_thyroxine = int(request.form.get('on_thyroxine', 0))
+            on_antithyroid_meds = int(request.form.get('on_antithyroid_meds', 0))
+            I131_treatment = int(request.form.get('I131_treatment', 0))
+            TSH = float(request.form.get('TSH', 0))
+            T3 = float(request.form.get('T3', 0))
+            TT4 = float(request.form.get('TT4', 0))
+        except (ValueError, TypeError):
+            return render_template('index.html', error="Invalid input. Please enter valid numerical values.")
 
         features = np.array([[age, 1 if sex == 'M' else 0, on_thyroxine, on_antithyroid_meds, I131_treatment, TSH, T3, TT4]])
 
-        prediction = model.predict(features)[0]
+        try:
+            prediction = model.predict(features)[0]
+        except Exception as e:
+            return render_template('index.html', error="Prediction failed due to an internal error.")
         
         thyroid_stage = {
             0: "Normal",
@@ -57,4 +62,4 @@ def predict():
     return render_template('index.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
