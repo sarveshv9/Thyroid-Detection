@@ -53,7 +53,9 @@ def predict():
         except (ValueError, TypeError):
             return render_template('index.html', error="Invalid input. Please enter valid numerical values."), 400
 
-        features = np.array([[age, 1 if sex == 'M' else 0, on_thyroxine, on_antithyroid_meds, I131_treatment, TSH, T3, TT4]])
+        import pandas as pd
+        feature_names = ['age', 'sex', 'on_thyroxine', 'on_antithyroid_meds', 'I131_treatment', 'TSH', 'T3', 'TT4']
+        features = pd.DataFrame([[age, int(sex), on_thyroxine, on_antithyroid_meds, I131_treatment, TSH, T3, TT4]], columns=feature_names)
 
         try:
             prediction = model.predict(features)[0]
