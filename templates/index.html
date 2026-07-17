@@ -27,6 +27,11 @@
 <div class="container">
   <div class="form-container">
     <h2>Thyroid Prediction Input</h2>
+    {% if error %}
+      <div class="alert alert-danger" style="color: red; margin-bottom: 15px; text-align: center;">
+        <strong>Error:</strong> {{ error }}
+      </div>
+    {% endif %}
     <form  id="thyroidForm" method="POST" action="/predict">
       <div class="form-group">
         <label for="age">Age:</label>
@@ -85,7 +90,6 @@
 
     </form>
   </div>
-</main> 
 
   <div class="result-container">
     <h2>Prediction Result</h2>
@@ -95,14 +99,14 @@
       <canvas id="thyroidChart"></canvas>
       
       <div class="recommendations">
-        {% if prediction == "Overt Hyperthyroidism" %}
-          <p>Recommendation: Consult an endocrinologist for appropriate. Regular monitoring of thyroid levels is necessary. Dietary adjustments may also be recommended.</p>
-        {% elif prediction == "Overt Hypothyroidism" %}
-          <p>Recommendation: You might need thyroid hormone replacement therapy. Regular follow-up with your healthcare provider is important. Maintain a balanced diet and monitor symptoms.</p>
-        {% elif prediction == "Subclinical Hyperthyroidism" %}
-          <p>Recommendation: Periodic monitoring of thyroid function is suggested. Your doctor may suggest lifestyle changes or treatments depending on symptoms.</p>
-        {% elif prediction == "Subclinical Hypothyroidism" %}
-          <p>Recommendation: Regular monitoring of thyroid levels is advised. Discuss with your doctor whether treatment is needed based on your symptoms and thyroid function tests.</p>
+        {% if prediction == "Hyperthyroid" %}
+          <p>Recommendation: Consult an endocrinologist for appropriate treatment. Regular monitoring of thyroid levels is necessary. Dietary adjustments and medication may be recommended to lower hormone production.</p>
+        {% elif prediction == "Hypothyroid" %}
+          <p>Recommendation: You might need thyroid hormone replacement therapy. Regular follow-up with your healthcare provider is important. Maintain a balanced diet and monitor symptoms like fatigue or weight gain.</p>
+        {% elif prediction == "Negative" %}
+          <p>Recommendation: Your thyroid function appears normal. Continue maintaining a healthy lifestyle and routine check-ups. No specific thyroid treatment is indicated at this time.</p>
+        {% elif prediction == "Other" %}
+          <p>Recommendation: Your lab results indicate an atypical condition (e.g., binding protein issues or thyroid replacement therapy effects). Please consult your healthcare provider for a detailed evaluation.</p>
         {% else %}
           <p>Recommendation: No specific recommendations available. Please consult a healthcare provider for further advice.</p>
         {% endif %}
@@ -120,9 +124,9 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Create chart with Jinja variables (defaulting to 0)
             createThyroidChart({
-                TSH: {{ TSH | default(0) }},
-                T3: {{ T3 | default(0) }},
-                TT4: {{ TT4 | default(0) }}
+                TSH: parseFloat('{{ TSH | default(0) }}'),
+                T3: parseFloat('{{ T3 | default(0) }}'),
+                TT4: parseFloat('{{ TT4 | default(0) }}')
             });
         });
 

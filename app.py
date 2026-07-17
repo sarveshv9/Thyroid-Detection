@@ -2,30 +2,94 @@ from flask import Flask, render_template, request
 import numpy as np
 import joblib
 import pandas as pd
-
-model = joblib.load('src/model/RF1_model.pkl')
-
-THYROID_STAGE = {
-    0: "Normal",
-    1: "Overt Hyperthyroidism",
-    2: "Overt Hypothyroidism",
-    3: "Subclinical Hyperthyroidism",
-    4: "Subclinical Hypothyroidism",
-    5: "Unclassified",
-}
-
-EXPECTED_FEATURES = ['age', 'sex', 'on_thyroxine', 'on_antithyroid_meds', 'I131_treatment', 'TSH', 'T3', 'TT4']
-
 import logging
 
+# ── Logging ────────────────────────────────────────────────
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+# ── Load model pipeline & label encoder ────────────────────
+model = joblib.load('src/model/thyroid_model_v2.pkl')
+label_encoder = joblib.load('src/model/label_encoder_v2.pkl')
+
+THYROID_STAGE = {cls: cls for cls in label_encoder.classes_}
+
+# Features the user submits via the form (8 features, same as original)
+FORM_FEATURES = ['age', 'sex', 'on_thyroxine', 'on_antithyroid_meds', 'I131_treatment', 'TSH', 'T3', 'TT4']
+
 app = Flask(__name__)
+
+
+def build_full_feature_row(age, sex, on_thyroxine, on_antithyroid_meds,
+                           I131_treatment, TSH, T3, TT4):
+    """
+    Build a complete feature DataFrame from the 8 user-submitted values.
+    Engineered features and missing columns are computed or set to defaults.
+    """
+    # ── Base features ──
+    row = {
+        'age': float(age),
+        'sex': sex,
+        'on_thyroxine': int(on_thyroxine),
+        'on_antithyroid_meds': int(on_antithyroid_meds),
+        'I131_treatment': int(I131_treatment),
+        'TSH': float(TSH),
+        'T3': float(T3),
+        'TT4': float(TT4),
+    }
+
+    # ── Columns not available from user form — set to defaults ──
+    row['query_on_thyroxine'] = 0
+    row['sick'] = 0
+    row['pregnant'] = 0
+    row['thyroid_surgery'] = 0
+    row['query_hypothyroid'] = 0
+    row['query_hyperthyroid'] = 0
+    row['lithium'] = 0
+    row['goitre'] = 0
+    row['tumor'] = 0
+    row['hypopituitary'] = 0
+    row['psych'] = 0
+    row['referral_source'] = 'other'
+    row['T4U'] = np.nan  # Will be imputed by the pipeline
+    row['FTI'] = np.nan  # Will be imputed by the pipeline
+
+    # ── Engineered features ──
+    row['TSH_T3_ratio'] = row['TSH'] / (row['T3'] + 1e-6)
+    row['TSH_TT4_ratio'] = row['TSH'] / (row['TT4'] + 1e-6)
+    row['T3_TT4_ratio'] = row['T3'] / (row['TT4'] + 1e-6)
+    row['T4U_TT4_interaction'] = np.nan  # T4U is unknown
+
+    # Age group
+    age_val = row['age']
+    if age_val <= 18:
+        row['age_group'] = 'pediatric'
+    elif age_val <= 45:
+        row['age_group'] = 'young_adult'
+    elif age_val <= 65:
+        row['age_group'] = 'middle_aged'
+    else:
+        row['age_group'] = 'elderly'
+
+    # Extreme flags
+    row['extreme_TSH'] = int(row['TSH'] > 10 or row['TSH'] < 0.1)
+    row['extreme_T3'] = int(row['T3'] > 4 or row['T3'] < 0.5)
+    row['extreme_TT4'] = int(row['TT4'] > 200 or row['TT4'] < 40)
+
+    # Missingness indicators (user provides TSH, T3, TT4 — so not missing)
+    row['TSH_missing'] = 0
+    row['T3_missing'] = 0
+    row['TT4_missing'] = 0
+    row['T4U_missing'] = 1  # Not provided
+    row['FTI_missing'] = 1  # Not provided
+
+    return pd.DataFrame([row])
+
 
 @app.route('/health')
 def health_check():
     return {"status": "healthy"}, 200
+
 
 @app.after_request
 def add_security_headers(response):
@@ -57,12 +121,12 @@ def risk_factors():
 def predict():
     if request.method == 'POST':
         # Check for missing or empty fields
-        if not all(field in request.form and str(request.form[field]).strip() != '' for field in EXPECTED_FEATURES):
+        if not all(field in request.form and str(request.form[field]).strip() != '' for field in FORM_FEATURES):
             return render_template('index.html', error="Missing required input fields. Please fill out the entire form."), 400
 
         try:
             age = float(request.form.get('age'))
-            sex = request.form.get('sex')  
+            sex = request.form.get('sex')
             on_thyroxine = int(request.form.get('on_thyroxine'))
             on_antithyroid_meds = int(request.form.get('on_antithyroid_meds'))
             I131_treatment = int(request.form.get('I131_treatment'))
@@ -72,19 +136,20 @@ def predict():
         except (ValueError, TypeError):
             return render_template('index.html', error="Invalid input. Please enter valid numerical values."), 400
 
-        features = pd.DataFrame([[age, int(sex), on_thyroxine, on_antithyroid_meds, I131_treatment, TSH, T3, TT4]], columns=EXPECTED_FEATURES)
+        # Build full feature row with engineered features
+        features = build_full_feature_row(
+            age, sex, on_thyroxine, on_antithyroid_meds,
+            I131_treatment, TSH, T3, TT4
+        )
 
         try:
-            prediction = model.predict(features)[0]
+            prediction_encoded = model.predict(features)[0]
+            result = label_encoder.inverse_transform([prediction_encoded])[0]
         except Exception as e:
             logger.error(f"Prediction error: {e}", exc_info=True)
             return render_template('index.html', error="Prediction failed due to an internal error."), 500
 
-        
-        result = THYROID_STAGE.get(prediction, "Unknown")
-
         return render_template('index.html', prediction=result, TSH=TSH, T3=T3, TT4=TT4)
-
 
     return render_template('index.html')
 
@@ -98,4 +163,4 @@ def internal_server_error(e):
     return render_template('index.html', error="500 Error: An internal server error occurred."), 500
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(host='0.0.0.0', port=8080, debug=False)

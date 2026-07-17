@@ -1,0 +1,24 @@
+{
+  "final_model": "GradientBoosting",
+  "test_metrics": {
+    "accuracy": 0.943324250681199,
+    "balanced_accuracy": 0.8866336861796001,
+    "precision_macro": 0.8734374627957209,
+    "recall_macro": 0.8866336861796001,
+    "f1_macro": 0.8798302654188833,
+    "f1_weighted": 0.9435579970610628,
+    "precision_weighted": 0.9438510880668762,
+    "recall_weighted": 0.943324250681199,
+    "roc_auc_ovr": 0.9916595573332097
+  },
+  "classes": [
+    "Hyperthyroid",
+    "Hypothyroid",
+    "Negative",
+    "Other"
+  ],
+  "n_features": 35,
+  "train_size": 7337,
+  "test_size": 1835,
+  "total_time_sec": 1494.0
+}
