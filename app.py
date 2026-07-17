@@ -14,6 +14,8 @@ THYROID_STAGE = {
     5: "Unclassified",
 }
 
+EXPECTED_FEATURES = ['age', 'sex', 'on_thyroxine', 'on_antithyroid_meds', 'I131_treatment', 'TSH', 'T3', 'TT4']
+
 app = Flask(__name__)
 
 @app.after_request
@@ -45,10 +47,8 @@ def risk_factors():
 @app.route('/predict', methods=['POST', 'GET'])
 def predict():
     if request.method == 'POST':
-        required_fields = ['age', 'sex', 'on_thyroxine', 'on_antithyroid_meds', 'I131_treatment', 'TSH', 'T3', 'TT4']
-        
         # Check for missing or empty fields
-        if not all(field in request.form and str(request.form[field]).strip() != '' for field in required_fields):
+        if not all(field in request.form and str(request.form[field]).strip() != '' for field in EXPECTED_FEATURES):
             return render_template('index.html', error="Missing required input fields. Please fill out the entire form."), 400
 
         try:
@@ -63,8 +63,7 @@ def predict():
         except (ValueError, TypeError):
             return render_template('index.html', error="Invalid input. Please enter valid numerical values."), 400
 
-        feature_names = ['age', 'sex', 'on_thyroxine', 'on_antithyroid_meds', 'I131_treatment', 'TSH', 'T3', 'TT4']
-        features = pd.DataFrame([[age, int(sex), on_thyroxine, on_antithyroid_meds, I131_treatment, TSH, T3, TT4]], columns=feature_names)
+        features = pd.DataFrame([[age, int(sex), on_thyroxine, on_antithyroid_meds, I131_treatment, TSH, T3, TT4]], columns=EXPECTED_FEATURES)
 
         try:
             prediction = model.predict(features)[0]
