@@ -1,8 +1,18 @@
 from flask import Flask, render_template, request
 import numpy as np
 import joblib
+import pandas as pd
 
 model = joblib.load('src/model/RF1_model.pkl')
+
+THYROID_STAGE = {
+    0: "Normal",
+    1: "Overt Hyperthyroidism",
+    2: "Overt Hypothyroidism",
+    3: "Subclinical Hyperthyroidism",
+    4: "Subclinical Hypothyroidism",
+    5: "Unclassified",
+}
 
 app = Flask(__name__)
 
@@ -53,7 +63,6 @@ def predict():
         except (ValueError, TypeError):
             return render_template('index.html', error="Invalid input. Please enter valid numerical values."), 400
 
-        import pandas as pd
         feature_names = ['age', 'sex', 'on_thyroxine', 'on_antithyroid_meds', 'I131_treatment', 'TSH', 'T3', 'TT4']
         features = pd.DataFrame([[age, int(sex), on_thyroxine, on_antithyroid_meds, I131_treatment, TSH, T3, TT4]], columns=feature_names)
 
@@ -63,16 +72,7 @@ def predict():
             return render_template('index.html', error="Prediction failed due to an internal error."), 500
 
         
-        thyroid_stage = {
-            0: "Normal",
-            1: "Overt Hyperthyroidism",
-            2: "Overt Hypothyroidism",
-            3: "Subclinical Hyperthyroidism",
-            4: "Subclinical Hypothyroidism",
-            5: "Unclassified",
-        }
-        
-        result = thyroid_stage.get(prediction, "Unknown")
+        result = THYROID_STAGE.get(prediction, "Unknown")
 
         return render_template('index.html', prediction=result, TSH=TSH, T3=T3, TT4=TT4)
 
