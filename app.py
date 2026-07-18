@@ -137,7 +137,14 @@ def add_security_headers(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['X-Frame-Options'] = 'SAMEORIGIN'
     response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
-    response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src 'self' fonts.gstatic.com;"
+    csp = (
+        "default-src 'self' https://overpass-api.de; "
+        "script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com cdn.jsdelivr.net unpkg.com; "
+        "style-src 'self' 'unsafe-inline' fonts.googleapis.com unpkg.com; "
+        "font-src 'self' fonts.gstatic.com; "
+        "img-src 'self' data: cdn.builder.io https://*.tile.openstreetmap.org unpkg.com;"
+    )
+    response.headers['Content-Security-Policy'] = csp
     response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
     return response
 
