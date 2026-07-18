@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thyroid Prediction Chatbot</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    .chat-container {
+      width: 100%;
+      max-width: 800px;
+      margin: 40px auto;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      height: 60vh;
+      overflow: hidden;
+    }
+    
+    .chat-header {
+      background-color: #007bff;
+      color: white;
+      padding: 15px 20px;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      background-color: #f9f9fb;
+    }
+    
+    .message {
+      max-width: 75%;
+      padding: 12px 16px;
+      border-radius: 15px;
+      line-height: 1.4;
+      font-size: 0.95rem;
+    }
+    
+    .message.user {
+      align-self: flex-end;
+      background-color: #007bff;
+      color: white;
+      border-bottom-right-radius: 0;
+    }
+    
+    .message.bot {
+      align-self: flex-start;
+      background-color: #e9ecef;
+      color: #333;
+      border-bottom-left-radius: 0;
+    }
+    
+    .message.bot p {
+      margin: 0 0 10px 0;
+    }
+    
+    .message.bot p:last-child {
+      margin-bottom: 0;
+    }
+    
+    .message.bot ul, .message.bot ol {
+      margin-top: 5px;
+      margin-bottom: 10px;
+      padding-left: 20px;
+    }
+    
+    .chat-input-area {
+      padding: 15px;
+      background-color: white;
+      border-top: 1px solid #ddd;
+      display: flex;
+      gap: 10px;
+    }
+    
+    .chat-input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      outline: none;
+      font-size: 1rem;
+    }
+    
+    .chat-input:focus {
+      border-color: #007bff;
+    }
+    
+    .send-btn {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    
+    .send-btn:hover {
+      background-color: #0056b3;
+    }
+    
+    .typing-indicator {
+      display: none;
+      align-self: flex-start;
+      color: #777;
+      font-style: italic;
+      font-size: 0.85rem;
+      padding-left: 5px;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container-head">
+        <nav class="nav">
+            <div class="logo">ThyroPredict</div>
+            <ul class="nav-list">
+              <li class="nav-item"><a href="{{ url_for('home') }}" class="nav-link">Home</a></li>
+              <li class="nav-item"><a href="{{ url_for('about_us') }}" class="nav-link">About</a></li>
+              <li class="nav-item"><a href="{{ url_for('predict') }}" class="nav-link">Predict</a></li>
+              <li class="nav-item"><a href="{{ url_for('map_page') }}" class="nav-link">Find a Doc</a></li>
+              <li class="nav-item"><a href="{{ url_for('risk_factors') }}" class="nav-link">Risk Factors</a></li>
+              <li class="nav-item"><a href="{{ url_for('chat_page') }}" class="nav-link" style="font-weight:bold; color:#ffdd57;">Chatbot</a></li>
+              {% if user_email %}
+                <li class="nav-item"><a href="{{ url_for('logout') }}" class="nav-link">Logout</a></li>
+              {% else %}
+                <li class="nav-item"><a href="{{ url_for('login') }}" class="nav-link">Login</a></li>
+              {% endif %}
+          </ul>
+        </nav>
+    </div>
+  </header>
+       
+  <div class="container">
+    <div class="chat-container">
+      <div class="chat-header">
+        Thyroid AI Assistant
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="message bot">
+          Hello! I'm your Thyroid AI Assistant. Ask me anything about thyroid health, diseases, or the prediction model.
+        </div>
+      </div>
+      <div class="typing-indicator" id="typingIndicator">AI is typing...</div>
+      <div class="chat-input-area">
+        <input type="text" id="userInput" class="chat-input" placeholder="Type your message here..." onkeypress="handleKeyPress(event)">
+        <button class="send-btn" onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 ThyroPredict. All rights reserved.</p>
+  </footer>    
+
+  <script>
+    const chatMessages = document.getElementById('chatMessages');
+    const userInput = document.getElementById('userInput');
+    const typingIndicator = document.getElementById('typingIndicator');
+
+    function handleKeyPress(e) {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    }
+
+    async function sendMessage() {
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      // Add user message to UI
+      appendMessage(message, 'user');
+      userInput.value = '';
+      
+      // Show typing indicator
+      typingIndicator.style.display = 'block';
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message: message })
+        });
+        
+        const data = await response.json();
+        
+        // Hide typing indicator
+        typingIndicator.style.display = 'none';
+
+        if (response.ok) {
+          appendMessage(data.response, 'bot');
+        } else {
+          appendMessage("Sorry, I encountered an error. Please try again.", 'bot');
+          console.error(data.error);
+        }
+      } catch (error) {
+        typingIndicator.style.display = 'none';
+        appendMessage("Network error. Please check your connection.", 'bot');
+        console.error(error);
+      }
+    }
+
+    function appendMessage(text, sender) {
+      const msgDiv = document.createElement('div');
+      msgDiv.classList.add('message', sender);
+      
+      if (sender === 'bot') {
+        msgDiv.innerHTML = marked.parse(text);
+      } else {
+        msgDiv.textContent = text;
+      }
+      
+      chatMessages.appendChild(msgDiv);
+      
+      // Auto-scroll to bottom
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  </script>
+</body>
+</html>

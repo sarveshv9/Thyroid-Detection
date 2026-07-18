@@ -1,8 +1,14 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session, redirect, url_for, flash
+import os
+from supabase import create_client, Client
+from functools import wraps
 import numpy as np
 import joblib
 import pandas as pd
 import logging
+from flask import jsonify
+
+from src.rag.chatbot import ThyroidBot
 
 # ── Logging ────────────────────────────────────────────────
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -18,7 +24,32 @@ THYROID_STAGE = {cls: cls for cls in label_encoder.classes_}
 FORM_FEATURES = ['age', 'sex', 'on_thyroxine', 'on_antithyroid_meds', 'I131_treatment', 'TSH', 'T3', 'TT4']
 
 app = Flask(__name__)
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'default_secret_key_for_dev')
 
+# ── Initialize Supabase ──
+supabase_url = os.environ.get("SUPABASE_URL")
+supabase_key = os.environ.get("SUPABASE_KEY")
+if supabase_url and supabase_key:
+    supabase: Client = create_client(supabase_url, supabase_key)
+else:
+    logger.warning("Supabase credentials not found in environment variables.")
+    supabase = None
+
+@app.context_processor
+def inject_user():
+    return dict(user_email=session.get('user_email'))
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+# ── Initialize Chatbot ──
+chatbot = ThyroidBot()
+chatbot.initialize()
 
 def build_full_feature_row(age, sex, on_thyroxine, on_antithyroid_meds,
                            I131_treatment, TSH, T3, TT4):
@@ -118,6 +149,7 @@ def risk_factors():
     return render_template('riskfac.html')
 
 @app.route('/predict', methods=['POST', 'GET'])
+@login_required
 def predict():
     if request.method == 'POST':
         # Check for missing or empty fields
@@ -152,6 +184,71 @@ def predict():
         return render_template('index.html', prediction=result, TSH=TSH, T3=T3, TT4=TT4)
 
     return render_template('index.html')
+
+@app.route('/chat')
+@login_required
+def chat_page():
+    return render_template('chat.html')
+
+@app.route('/api/chat', methods=['POST'])
+def api_chat():
+    data = request.json
+    if not data or 'message' not in data:
+        return jsonify({"error": "Message is required"}), 400
+    
+    user_message = data['message']
+    
+    try:
+        bot_response = chatbot.ask(user_message)
+        return jsonify({"response": bot_response})
+    except Exception as e:
+        logger.error(f"Chat error: {e}", exc_info=True)
+        return jsonify({"error": "Internal server error"}), 500
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        if supabase:
+            try:
+                response = supabase.auth.sign_up({"email": email, "password": password})
+                if response.user:
+                    return render_template('login.html', message="Signup successful! Please log in.")
+                else:
+                    return render_template('signup.html', error="Signup failed.")
+            except Exception as e:
+                return render_template('signup.html', error=str(e))
+        else:
+            return render_template('signup.html', error="Supabase not configured.")
+    return render_template('signup.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        if supabase:
+            try:
+                response = supabase.auth.sign_in_with_password({"email": email, "password": password})
+                if response.user:
+                    session['user_id'] = response.user.id
+                    session['user_email'] = response.user.email
+                    return redirect(url_for('home'))
+                else:
+                    return render_template('login.html', error="Invalid credentials.")
+            except Exception as e:
+                return render_template('login.html', error="Invalid credentials.")
+        else:
+            return render_template('login.html', error="Supabase not configured.")
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    if supabase:
+        supabase.auth.sign_out()
+    return redirect(url_for('home'))
 
 @app.errorhandler(404)
 def page_not_found(e):
