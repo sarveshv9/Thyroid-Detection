@@ -1,0 +1,26 @@
+[project]
+name = "thyroid-detection"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "chromadb>=0.5.0",
+    "flask>=3.0.0",
+    "gunicorn>=23.0.0",
+    "jinja2>=3.1.0",
+    "joblib>=1.4.0",
+    "langchain>=0.1.0",
+    "langchain-community>=0.0.10",
+    "langchain-google-genai>=1.0.0",
+    "lightgbm>=4.0.0",
+    "numpy>=1.26.0",
+    "pandas>=2.2.0",
+    "pypdf>=4.0.0",
+    "python-dotenv>=1.0.0",
+    "scikit-learn>=1.4.0",
+    "scipy>=1.11.0",
+    "supabase>=2.3.4",
+    "werkzeug>=3.0.0",
+    "xgboost>=2.0.0",
+]

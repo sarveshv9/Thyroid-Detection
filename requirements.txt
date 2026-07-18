@@ -8,19 +8,6 @@ scipy>=1.11.0
 xgboost>=2.0.0
 lightgbm>=4.0.0
 
-# Imbalanced Learning
-imbalanced-learn>=0.12.0
-
-# Hyperparameter Tuning
-optuna>=3.5.0
-
-# Explainability
-shap>=0.45.0
-
-# Visualization
-matplotlib>=3.8.0
-seaborn>=0.13.0
-
 # Web Framework
 Flask>=3.0.0
 gunicorn>=23.0.0
