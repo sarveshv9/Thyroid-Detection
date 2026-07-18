@@ -11,5 +11,10 @@
       "src": "/(.*)",
       "dest": "app.py"
     }
-  ]
+  ],
+  "build": {
+    "env": {
+      "VERCEL_FORCE_USE_PIP": "1"
+    }
+  }
 }
