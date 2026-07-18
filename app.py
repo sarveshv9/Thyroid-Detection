@@ -166,7 +166,6 @@ def risk_factors():
     return render_template('riskfac.html')
 
 @app.route('/predict', methods=['POST', 'GET'])
-@login_required
 def predict():
     if request.method == 'POST':
         # Check for missing or empty fields
