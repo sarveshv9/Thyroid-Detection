@@ -2,9 +2,8 @@ import os
 from dotenv import load_dotenv
 from langchain_community.document_loaders import DirectoryLoader, TextLoader, PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import Chroma
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_classic.chains import create_retrieval_chain
 from langchain_classic.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
@@ -25,8 +24,8 @@ class ThyroidBot:
         self.vector_store = None
         self.qa_chain = None
         
-        # Initialize Embeddings (Local HuggingFace model)
-        self.embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        # Initialize Embeddings (Google API)
+        self.embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-2")
         
         # Initialize LLM (Gemini)
         # Using gemini-flash-latest as a default capable and fast model
@@ -69,11 +68,19 @@ class ThyroidBot:
             splits = text_splitter.split_documents(documents)
             
             # 3. Create or load vector store
-            self.vector_store = Chroma.from_documents(
-                documents=splits,
-                embedding=self.embeddings,
-                persist_directory=self.persist_directory
-            )
+            if os.path.exists(self.persist_directory) and os.listdir(self.persist_directory):
+                logger.info("Loading existing vector store...")
+                self.vector_store = Chroma(
+                    persist_directory=self.persist_directory,
+                    embedding_function=self.embeddings
+                )
+            else:
+                logger.info("Creating new vector store...")
+                self.vector_store = Chroma.from_documents(
+                    documents=splits,
+                    embedding=self.embeddings,
+                    persist_directory=self.persist_directory
+                )
             
             # 4. Create chains
             retriever = self.vector_store.as_retriever(search_kwargs={"k": 3})

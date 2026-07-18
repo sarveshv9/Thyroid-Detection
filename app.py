@@ -1,5 +1,15 @@
-from flask import Flask, render_template, request, session, redirect, url_for, flash
 import os
+import sys
+try:
+    __import__('pysqlite3')
+    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+except ImportError:
+    pass  # Allow local execution if pysqlite3 is not installed
+
+from dotenv import load_dotenv
+load_dotenv()
+
+from flask import Flask, render_template, request, session, redirect, url_for, flash
 from supabase import create_client, Client
 from functools import wraps
 import numpy as np
@@ -238,7 +248,7 @@ def login():
                 else:
                     return render_template('login.html', error="Invalid credentials.")
             except Exception as e:
-                return render_template('login.html', error="Invalid credentials.")
+                return render_template('login.html', error=str(e))
         else:
             return render_template('login.html', error="Supabase not configured.")
     return render_template('login.html')
