@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - ThyroPredict</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <style>
+        .profile-section {
+            padding: 120px 0 60px;
+            min-height: calc(100vh - 100px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 50px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: var(--primary-color, #4a90e2);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            margin: 0 auto 30px;
+            box-shadow: 0 10px 20px rgba(74, 144, 226, 0.3);
+        }
+        .profile-email {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .profile-info {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+        .profile-actions {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-color, #4a90e2);
+            color: var(--primary-color, #4a90e2);
+            padding: 10px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-outline:hover {
+            background: var(--primary-color, #4a90e2);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">ThyroPredict</div>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="{{ url_for('home') }}" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="{{ url_for('about_us') }}" class="nav-link">About</a></li>
+                    <li class="nav-item"><a href="{{ url_for('predict') }}" class="nav-link">Predict</a></li>
+                    <li class="nav-item"><a href="{{ url_for('map_page') }}" class="nav-link">Find a Doc</a></li>
+                    <li class="nav-item"><a href="{{ url_for('risk_factors') }}" class="nav-link">Risk Factors</a></li>
+                    <li class="nav-item"><a href="{{ url_for('chat_page') }}" class="nav-link">Chatbot</a></li>
+                    {% if user_email %}
+                      <li class="nav-item"><a href="{{ url_for('profile') }}" class="nav-link">Profile</a></li>
+                      <li class="nav-item"><a href="{{ url_for('logout') }}" class="nav-link">Logout</a></li>
+                    {% else %}
+                      <li class="nav-item"><a href="{{ url_for('login') }}" class="nav-link">Login</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="profile-section">
+        <div class="container" style="display: flex; justify-content: center;">
+            <div class="profile-card" data-aos="fade-up">
+                <div class="profile-avatar">
+                    {{ user_email[0]|upper if user_email else 'U' }}
+                </div>
+                <div class="profile-email">
+                    {{ user_email }}
+                </div>
+                <div class="profile-info">
+                    Welcome to your ThyroPredict dashboard. Stay healthy!
+                </div>
+                <div class="profile-actions">
+                    <a href="{{ url_for('predict') }}" class="btn">New Prediction</a>
+                    <a href="{{ url_for('chat_page') }}" class="btn-outline">Ask Chatbot</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 ThyroPredict. All rights reserved.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+</body>
+</html>

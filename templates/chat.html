@@ -134,6 +134,7 @@
               <li class="nav-item"><a href="{{ url_for('risk_factors') }}" class="nav-link">Risk Factors</a></li>
               <li class="nav-item"><a href="{{ url_for('chat_page') }}" class="nav-link" style="font-weight:bold; color:#ffdd57;">Chatbot</a></li>
               {% if user_email %}
+                <li class="nav-item"><a href="{{ url_for('profile') }}" class="nav-link">Profile</a></li>
                 <li class="nav-item"><a href="{{ url_for('logout') }}" class="nav-link">Logout</a></li>
               {% else %}
                 <li class="nav-item"><a href="{{ url_for('login') }}" class="nav-link">Login</a></li>

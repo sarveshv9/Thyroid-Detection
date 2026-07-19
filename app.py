@@ -250,7 +250,7 @@ def login():
                 if response.user:
                     session['user_id'] = response.user.id
                     session['user_email'] = response.user.email
-                    return redirect(url_for('home'))
+                    return redirect(url_for('profile'))
                 else:
                     return render_template('login.html', error="Invalid credentials.")
             except Exception as e:
@@ -265,6 +265,11 @@ def logout():
     if supabase:
         supabase.auth.sign_out()
     return redirect(url_for('home'))
+
+@app.route('/profile')
+@login_required
+def profile():
+    return render_template('profile.html')
 
 @app.errorhandler(404)
 def page_not_found(e):
