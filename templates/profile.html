@@ -67,6 +67,58 @@
             background: var(--primary-color, #4a90e2);
             color: white;
         }
+        .profile-form {
+            margin: 20px 0 30px;
+            text-align: left;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        .form-control:focus {
+            border-color: var(--primary-color, #4a90e2);
+            outline: none;
+        }
+        .btn-submit {
+            background: var(--primary-color, #4a90e2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        .btn-submit:hover {
+            background: #357abd;
+        }
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
     </style>
 </head>
 <body>
@@ -104,6 +156,26 @@
                 <div class="profile-info">
                     Welcome to your ThyroPredict dashboard. Stay healthy!
                 </div>
+                
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                      <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
+
+                <form method="POST" action="{{ url_for('profile') }}" class="profile-form">
+                    <div class="form-group">
+                        <label for="full_name">Full Name</label>
+                        <input type="text" id="full_name" name="full_name" class="form-control" placeholder="Enter your full name" value="{{ profile.get('full_name', '') }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="Enter your phone number" value="{{ profile.get('phone', '') }}">
+                    </div>
+                    <button type="submit" class="btn-submit">Save Profile</button>
+                </form>
                 <div class="profile-actions">
                     <a href="{{ url_for('predict') }}" class="btn">New Prediction</a>
                     <a href="{{ url_for('chat_page') }}" class="btn-outline">Ask Chatbot</a>

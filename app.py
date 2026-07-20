@@ -17,6 +17,9 @@ import joblib
 import pandas as pd
 import logging
 from flask import jsonify
+import json
+import redis
+from models import db, UserProfile
 
 from src.rag.chatbot import ThyroidBot
 
@@ -35,6 +38,18 @@ FORM_FEATURES = ['age', 'sex', 'on_thyroxine', 'on_antithyroid_meds', 'I131_trea
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'default_secret_key_for_dev')
+
+# ── Initialize Database ──
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///local.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
+
+with app.app_context():
+    db.create_all()
+
+# ── Initialize Redis ──
+redis_url = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+redis_client = redis.Redis.from_url(redis_url, decode_responses=True)
 
 # ── Initialize Supabase ──
 supabase_url = os.environ.get("SUPABASE_URL")
@@ -266,10 +281,46 @@ def logout():
         supabase.auth.sign_out()
     return redirect(url_for('home'))
 
-@app.route('/profile')
+@app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    return render_template('profile.html')
+    user_id = session.get('user_id')
+    user_email = session.get('user_email')
+    
+    if request.method == 'POST':
+        full_name = request.form.get('full_name')
+        phone = request.form.get('phone')
+        
+        # Update PostgreSQL
+        profile_data = UserProfile.query.filter_by(id=user_id).first()
+        if not profile_data:
+            profile_data = UserProfile(id=user_id)
+            db.session.add(profile_data)
+        
+        profile_data.full_name = full_name
+        profile_data.phone = phone
+        db.session.commit()
+        
+        # Invalidate/update Redis cache
+        redis_client.set(f"user_profile:{user_id}", json.dumps(profile_data.to_dict()), ex=3600)
+        
+        flash("Profile updated successfully!", "success")
+        return redirect(url_for('profile'))
+        
+    # GET Request: Try fetch from Redis cache first
+    cached_profile = redis_client.get(f"user_profile:{user_id}")
+    if cached_profile:
+        profile_info = json.loads(cached_profile)
+    else:
+        profile_data = UserProfile.query.filter_by(id=user_id).first()
+        if profile_data:
+            profile_info = profile_data.to_dict()
+            # Cache the result
+            redis_client.set(f"user_profile:{user_id}", json.dumps(profile_info), ex=3600)
+        else:
+            profile_info = {}
+            
+    return render_template('profile.html', profile=profile_info)
 
 @app.errorhandler(404)
 def page_not_found(e):
